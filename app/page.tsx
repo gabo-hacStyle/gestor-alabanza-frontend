@@ -7,7 +7,7 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    router.push('/dashboard');
+    router.push('/login');
   }, [router]);
 
   return (
@@ -16,7 +16,7 @@ export default function Home() {
         <h1 className="text-2xl font-bold text-gray-900 mb-4">
           Plataforma Iglesia
         </h1>
-        <p className="text-gray-600">Redirigiendo al dashboard...</p>
+        <p className="text-gray-600">Redirigiendo al login...</p>
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ export default function DirectorCanciones() {
     notas: ''
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,

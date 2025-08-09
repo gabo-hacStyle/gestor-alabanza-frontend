@@ -1,3 +1,4 @@
+'use server'
 import { BASE_URL } from "./urls";
 
 const BASE_SYSTEM = `${BASE_URL}/system`;

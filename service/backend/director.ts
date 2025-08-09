@@ -1,3 +1,4 @@
+'use server'
 import { BASE_URL } from "./urls";
 
 const BASE_DIRECTOR = `${BASE_URL}/director`
