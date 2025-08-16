@@ -37,7 +37,7 @@ export async function authenticateWithGoogle(googleToken: string): Promise<AuthR
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 86400, // 24 horas (igual que el JWT del backend)
+      maxAge: 5184000, // 2 meses (igual que el JWT del backend)
       path: '/',
     });
 
@@ -46,7 +46,7 @@ export async function authenticateWithGoogle(googleToken: string): Promise<AuthR
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 86400, // 24 horas (igual que el JWT del backend)
+      maxAge: 5184000, // 2 meses (igual que el JWT del backend)
       path: '/',
     });
 
