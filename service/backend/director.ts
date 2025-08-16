@@ -1,24 +1,42 @@
 'use server'
 import { BASE_URL } from "./urls";
+import { getUserInfo } from "./auth";
 
 const BASE_DIRECTOR = `${BASE_URL}/director`
 
-export const createSongsList = async (idDirector: string, idService: string, songsList: CreateSongBody) => {
+const getDirectorId = async () => {
+    const user = await getUserInfo();
+    return user.id;
+}
+
+export const createSongsList = async (idService: string, songsList: CreateSongBody[]) => {
+    const idDirector = await getDirectorId();
+    console.log(idDirector);
     const response = await fetch(`${BASE_DIRECTOR}/${idDirector}/services/${idService}/songs`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(songsList)     
+        body: JSON.stringify(songsList)
     })
+    console.log(response.status);
     if (!response.ok) {
+        if(response.status === 403){
+            return {
+                status: 403,
+                message: 'Forbidden'
+            }
+        }
         throw new Error('Failed to create songs list');
     }
+
     const data = await response.json() as Service;
+    
     return data;
 }
 
-export const updateSongsList = async (idDirector: string, idService: string, songsList: CreateSongBody) => {
+export const updateSongsList = async (idService: string, songsList: CreateSongBody[]) => {
+    const idDirector = await getDirectorId();
     const response = await fetch(`${BASE_DIRECTOR}/${idDirector}/services/${idService}/songs`, {
         method: 'PUT',
         headers: {
@@ -27,6 +45,12 @@ export const updateSongsList = async (idDirector: string, idService: string, son
         body: JSON.stringify(songsList)
     })
     if (!response.ok) {
+        if(response.status === 403){
+            return {
+                status: 403,
+                message: 'Forbidden'
+            }
+        }
         throw new Error('Failed to update songs list');
     }
 

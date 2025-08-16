@@ -11,7 +11,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <h1 className="text-xl font-bold text-gray-900">Plataforma Iglesia</h1>
+            <h1 className="text-xl font-bold text-gray-900">Asignacion de servicios</h1>
           </div>
           
           <div className="flex space-x-4">

@@ -12,8 +12,8 @@ type Service = {
     location: string;
     createdAt: string;
     directors: User[];
-    musicians: User[];
-    songs?: Song[];
+    musiciansList: MusiciansList[];
+    songsList: Song[];
 }
 
 type UpdateServiceGeneral = {
@@ -29,10 +29,25 @@ type MusicianAssignment = {
     instrument: string;
 }
 
+type UpdateAssignmentRequest = {
+    directorIds: User[];
+    musiciansList: MusiciansList[];
+}
 
 type UpdateAssignment = {
+    directorIds: string[];
+    musiciansList: MusicianAssignment[];
+}
+
+type UpdateAssignmentBody = Partial<UpdateAssignment>;
+
+type CreateServiceRequest = {
+    serviceDate: string;
+    practiceDate: string;
+    location: string;
     directorIds: string[];
     musicianAssignments: MusicianAssignment[];
 }
 
-type UpdateAssignmentBody = Partial<UpdateAssignment>;
+type CreateServiceRequestBody = Partial<CreateServiceRequest>;
+

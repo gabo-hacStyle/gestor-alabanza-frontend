@@ -41,18 +41,18 @@ export default function Navigation() {
     if (user.role === 'ADMIN') {
       baseItems.push(
         { href: '/admin', label: 'Administración', icon: '⚙️' },
-        { href: '/director', label: 'Director', icon: '🎼' },
+        
         { href: '/servicios', label: 'Servicios', icon: '📅' }
       );
     } else if (user.role === 'DIRECTOR') {
       baseItems.push(
-        { href: '/director', label: 'Director', icon: '🎼' },
+        
         { href: '/servicios', label: 'Servicios', icon: '📅' }
       );
     } else {
       // MUSICIAN
       baseItems.push(
-        { href: '/servicios', label: 'Mis Servicios', icon: '📅' }
+        { href: '/servicios', label: 'Servicios', icon: '📅' }
       );
     }
 

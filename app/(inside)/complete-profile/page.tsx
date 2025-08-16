@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getUserInfo } from '@/service/backend/auth';
-import { User } from '@/types/auth';
+
+import { updateUser } from '@/service/backend/users';
 
 export default function CompleteProfilePage() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<any>();
   const [formData, setFormData] = useState({
     name: '',
     phoneNumber: '',
@@ -41,22 +42,13 @@ export default function CompleteProfilePage() {
     setError(null);
 
     try {
-      const response = await fetch('/api/user/update', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: user?.id,
-          name: formData.name,
-          phoneNumber: formData.phoneNumber,
-        }),
+      const responseReal = await updateUser(user.id, {
+        name: formData.name,
+        phoneNumber: formData.phoneNumber,
       });
-
-      if (!response.ok) {
-        throw new Error('Error al actualizar el perfil');
-      }
-
+      
+      
+      
       // Redirigir al dashboard según el rol
       switch (user?.role) {
         case 'ADMIN':

@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import UserHeader from "@/components/UserHeader";
-import Navigation from "@/components/Navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Plataforma Iglesia",
-  description: "Sistema de gestión para servicios de iglesia",
+  title: "Asignacion de servicios",
+  description: "Sistema de gestión para servicios de la iglesia",
 };
 
 export default function RootLayout({
@@ -30,8 +28,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}
       >
         <div className="min-h-screen">
-          <UserHeader />
-          <Navigation />
+          
           <main className="flex-1">
             {children}
           </main>

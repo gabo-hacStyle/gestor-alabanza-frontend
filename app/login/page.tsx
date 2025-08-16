@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { authenticateWithGoogle } from '@/service/backend/auth';
+import { useEffect } from 'react';
+
 
 declare global {
   interface Window {
@@ -41,10 +43,6 @@ export default function LoginPage() {
           case 'ADMIN':
             router.push('/admin');
             break;
-          case 'DIRECTOR':
-            router.push('/director');
-            break;
-          case 'MUSICIAN':
           default:
             router.push('/dashboard');
             break;
@@ -81,7 +79,20 @@ export default function LoginPage() {
   };
 
   // Cargar Google OAuth cuando el componente se monta
-  useState(() => {
+  // Usar useEffect y agregar la etiqueta <script> directamente en el JSX
+ 
+  useEffect(() => {
+    // Verifica si el script ya está presente
+    const existingScript = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+    if (existingScript) {
+      if (window.google) {
+        initializeGoogleAuth();
+      } else {
+        existingScript.addEventListener('load', initializeGoogleAuth);
+      }
+      return;
+    }
+
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
@@ -90,18 +101,24 @@ export default function LoginPage() {
     document.head.appendChild(script);
 
     return () => {
-      document.head.removeChild(script);
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
     };
-  });
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Plataforma Iglesia
+            Asignacion de servicios
+            
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
+          <br />
+          Alianza Cristiana Neiva
+          <br />
             Inicia sesión con tu cuenta de Google
           </p>
         </div>
@@ -123,11 +140,7 @@ export default function LoginPage() {
             </div>
           )}
           
-          <div className="text-center">
-            <p className="text-sm text-gray-500">
-              Al iniciar sesión, aceptas nuestros términos de servicio y política de privacidad.
-            </p>
-          </div>
+          
         </div>
       </div>
     </div>

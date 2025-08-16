@@ -3,14 +3,16 @@
 import { cookies } from 'next/headers';
 import { AuthResponse, GoogleAuthRequest } from '@/types/auth';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080';
+import { BASE_URL } from './urls';
+
+
 
 export async function authenticateWithGoogle(googleToken: string): Promise<AuthResponse> {
 
   console.log(googleToken);
   console.log("Type of googleToken: ", typeof googleToken);
   try {
-    const response = await fetch(`${BACKEND_URL}/api/auth/google`, {
+    const response = await fetch(`${BASE_URL}/auth/google`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -29,22 +31,22 @@ export async function authenticateWithGoogle(googleToken: string): Promise<AuthR
     console.log(data);
    
     
-    // Guardar token en cookie segura
+    // Guardar token en cookie segura (24 horas = 86400 segundos)
     const cookieStore = await cookies();
     cookieStore.set('auth_token', data.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 7 días
+      maxAge: 86400, // 24 horas (igual que el JWT del backend)
       path: '/',
     });
 
-    // Guardar información del usuario en cookie
+    // Guardar información del usuario en cookie (24 horas)
     cookieStore.set('user_info', JSON.stringify(data.user), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 7 días
+      maxAge: 86400, // 24 horas (igual que el JWT del backend)
       path: '/',
     });
 
