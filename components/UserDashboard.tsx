@@ -4,8 +4,11 @@ import { getServicesByUserId } from "@/service/backend/users";
 import { useEffect, useState } from "react";
 import ServiceCard from "./ServiceCard";
 import { useRouter } from "next/navigation";
+import { hasRole, User } from "@/utils/roleUtils";
 
 export default function UserDashboard({user}: {user: User}) {
+
+  console.log(user);
   const router = useRouter();
 
   const [misServicios, setMisServicios] = useState<Service[]>([]);
@@ -18,6 +21,7 @@ export default function UserDashboard({user}: {user: User}) {
       const serviciosComoDirector = response.filter(servicio => servicio.directors.some(director => director.id === user.id));
       //El resto son de musico
       const serviciosComoMusico = response.filter(servicio => !servicio.directors.some(director => director.id === user.id));
+      console.log(serviciosComoMusico);
       
 
 
@@ -37,7 +41,8 @@ export default function UserDashboard({user}: {user: User}) {
     router.push(`/director/canciones/agregar/${serviceId}`);
   };
 
-  const handleEditService = (serviceId: string) => {
+
+  const handleEditSongs = (serviceId: string) => {
     console.log(serviceId);
     router.push(`/director/canciones/editar/${serviceId}`);
   };
@@ -52,7 +57,7 @@ export default function UserDashboard({user}: {user: User}) {
           <p className="text-sm text-gray-600">Asignados</p>
         </div>
 
-        {user.role === 'DIRECTOR' && (
+        {hasRole(user, 'DIRECTOR') && (
           <div className="bg-white rounded-lg shadow p-4">
             <h3 className="font-medium text-gray-900 mb-2">Servicios como director</h3>
             <p className="text-3xl font-bold text-blue-600">{serviciosComoDirector.length}</p>
@@ -69,9 +74,9 @@ export default function UserDashboard({user}: {user: User}) {
       <div className="bg-white rounded-lg shadow grid gap-4">
         {/* Servicios como director */}
         <div className="space-y-3">
-          {user.role === 'DIRECTOR' && serviciosComoDirector.map((servicio) => (
-            <ServiceCard key={servicio.id} service={servicio} role={user.role} 
-              onEdit={handleEditService}
+          {hasRole(user, 'DIRECTOR') && serviciosComoDirector.map((servicio) => (
+            <ServiceCard key={servicio.id} service={servicio} roles={user.roles || []}  
+              onEditSongs={handleEditSongs}
               onAddSongs={handleAddSongs}
             />
           ))}

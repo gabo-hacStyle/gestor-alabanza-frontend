@@ -1,11 +1,3 @@
-export interface User {
-  id: string;
-  email: string;
-  name?: string;
-  phoneNumber?: string;
-  role: 'ADMIN' | 'DIRECTOR' | 'MUSICIAN';
-  createdAt: string;
-}
 
 export interface AuthResponse {
   token: string;
@@ -20,7 +12,6 @@ export interface GoogleAuthRequest {
 
 export interface AuthState {
   user: User | null;
-  token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 }

@@ -46,22 +46,9 @@ export default function CompleteProfilePage() {
         name: formData.name,
         phoneNumber: formData.phoneNumber,
       });
+      router.push('/dashboard');
       
-      
-      
-      // Redirigir al dashboard según el rol
-      switch (user?.role) {
-        case 'ADMIN':
-          router.push('/admin');
-          break;
-        case 'DIRECTOR':
-          router.push('/director');
-          break;
-        case 'MUSICIAN':
-        default:
-          router.push('/dashboard');
-          break;
-      }
+
     } catch (error) {
       console.error('Error actualizando perfil:', error);
       setError('Error al actualizar el perfil. Por favor, intenta de nuevo.');
@@ -117,7 +104,7 @@ export default function CompleteProfilePage() {
                 required
                 value={formData.name}
                 onChange={handleInputChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full px-3 py-2 border text-black  border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Tu nombre completo"
               />
             </div>
@@ -132,7 +119,7 @@ export default function CompleteProfilePage() {
                 type="tel"
                 value={formData.phoneNumber}
                 onChange={handleInputChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full px-3 py-2 border text-black border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Tu número de teléfono"
               />
             </div>

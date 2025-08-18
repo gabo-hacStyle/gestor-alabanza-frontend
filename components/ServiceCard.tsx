@@ -6,17 +6,19 @@ import { es } from 'date-fns/locale';
 interface ServiceCardProps {
   service: Service;
   showActions?: boolean;
-  role?: string;
+  roles?: string[];
   onAddSongs?: (serviceId: string) => void;
-  onEdit?: (serviceId: string) => void;
+  onEditServices?: (serviceId: string) => void;
+  onEditSongs?: (serviceId: string) => void;
   onDelete?: (serviceId: string) => void;
 }
 
 export default function ServiceCard({ 
   service, 
   showActions = false, 
-  role,
-  onEdit, 
+  roles,
+  onEditServices, 
+  onEditSongs,
   onDelete,
   onAddSongs
 }: ServiceCardProps) {
@@ -40,18 +42,7 @@ export default function ServiceCard({
     }
   };
 
-  const getRoleBadgeColor = (role: string) => {
-    switch (role) {
-      case 'ADMIN':
-        return 'bg-red-100 text-red-800';
-      case 'DIRECTOR':
-        return 'bg-blue-100 text-blue-800';
-      case 'MUSICIAN':
-        return 'bg-green-100 text-green-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
+  
 
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
@@ -62,15 +53,13 @@ export default function ServiceCard({
             <h3 className="text-lg font-semibold">
               Servicio del {formatDate(service.serviceDate)}
             </h3>
-            <p className="text-blue-100 text-sm">
-              {formatTime(service.serviceDate)}
-            </p>
+            
           </div>
           {showActions && (
             <div className="flex gap-2">
-              {onEdit && role === 'ADMIN' && (
+              {onEditServices && roles?.includes('ADMIN') && (
                 <button
-                  onClick={() => onEdit(service.id)}
+                  onClick={() => onEditServices(service.id)}
                   className="p-2 bg-blue-500 hover:bg-blue-600 rounded-md transition-colors"
                   title="Editar servicio"
                 >
@@ -79,7 +68,7 @@ export default function ServiceCard({
                   </svg>
                 </button>
               )}
-              {onDelete && role === 'ADMIN' && (
+              {/* {onDelete && roles?.includes('ADMIN') && (
                 <button
                   onClick={() => onDelete(service.id)}
                   className="p-2 bg-red-500 hover:bg-red-600 rounded-md transition-colors"
@@ -89,7 +78,7 @@ export default function ServiceCard({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 </button>
-              )}
+              )} */}
             </div>
           )}
         </div>
@@ -115,9 +104,7 @@ export default function ServiceCard({
                   >
                     <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                     {director.name}
-                    <span className={`px-1.5 py-0.5 text-xs rounded ${getRoleBadgeColor(director.role)}`}>
-                      {director.role}
-                    </span>
+                   
                   </span>
                 ))}
               </div>
@@ -156,7 +143,7 @@ export default function ServiceCard({
         </div>
 
 
-        {(!service.songsList && role === 'DIRECTOR' && onAddSongs) ? (
+        {(!service.songsList && roles?.includes('DIRECTOR') && onAddSongs) ? (
               <>
               <button
                 type="button"
@@ -183,11 +170,11 @@ export default function ServiceCard({
               <span className="text-sm font-medium text-gray-700">Canciones ({service.songsList.length}):</span>
             </div>
 
-            {(role === 'DIRECTOR' && onEdit) ? (
+            {(roles?.includes('DIRECTOR') && onEditSongs) ? (
               <button
                 type="button"
                 className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors mb-2"
-                onClick={() => onEdit && onEdit(service.id)}
+                onClick={() => onEditSongs && onEditSongs(service.id)}
                 title="Editar canciones"
               >
                 {/* Icono de edición (lápiz) */}
@@ -240,7 +227,7 @@ export default function ServiceCard({
               <span className="text-sm font-medium text-gray-700">Ensayo:</span>
             </div>
             <p className="text-gray-900 ml-6">
-              {formatDate(service.practiceDate)} a las {formatTime(service.practiceDate)}
+              {formatDate(service.practiceDate)} 
             </p>
           </div>
 

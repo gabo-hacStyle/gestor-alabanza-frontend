@@ -135,7 +135,7 @@ export default function AdminServidores() {
               type="submit"
               className="flex-1 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
             >
-              Guardar Servidor
+              Guardar Servidores
             </button>
             <button
               type="button"

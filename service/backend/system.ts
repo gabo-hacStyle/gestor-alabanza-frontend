@@ -12,7 +12,7 @@ export const healthCheck = async () => {
     return data;
 }
 
-export const deleteSericesExpired = async () => {
+export const deleteServicesExpired = async () => {
     const response = await fetch(`${BASE_SYSTEM}/services/expired`, {
         method: 'DELETE'
     })

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { getUserInfo } from '@/service/backend/auth';
-import { User } from '@/types/auth';
+import { hasRole, User } from '@/utils/roleUtils';
 
 export default function Navigation() {
   const [user, setUser] = useState<User | null>(null);
@@ -38,13 +38,13 @@ export default function Navigation() {
     ];
 
     // Agregar items según el rol
-    if (user.role === 'ADMIN') {
+    if (hasRole(user, 'ADMIN')) {
       baseItems.push(
         { href: '/admin', label: 'Administración', icon: '⚙️' },
         
         { href: '/servicios', label: 'Servicios', icon: '📅' }
       );
-    } else if (user.role === 'DIRECTOR') {
+    } else if (hasRole(user, 'DIRECTOR')) {
       baseItems.push(
         
         { href: '/servicios', label: 'Servicios', icon: '📅' }

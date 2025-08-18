@@ -2,12 +2,7 @@
 
 import { useState } from 'react';
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
+
 
 interface UsersSelectionProps {
   users: User[];

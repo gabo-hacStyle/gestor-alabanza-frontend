@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { authenticateWithGoogle } from '@/service/backend/auth';
 import { useEffect } from 'react';
-
+import { hasRole } from '@/utils/roleUtils';
 
 declare global {
   interface Window {
@@ -39,13 +39,10 @@ export default function LoginPage() {
         router.push('/complete-profile');
       } else {
         // Usuario existente - redirigir según el rol
-        switch (result.user.role) {
-          case 'ADMIN':
-            router.push('/admin');
-            break;
-          default:
-            router.push('/dashboard');
-            break;
+        if (hasRole(result.user, 'ADMIN')) {
+          router.push('/admin');
+        } else {
+          router.push('/dashboard');
         }
       }
     } catch (error) {

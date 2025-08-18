@@ -12,7 +12,7 @@ export default function Servicios() {
   const [servicios, setServicios] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [role, setRole] = useState<string | null>(null);
+  const [roles, setRoles] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchServicios = async () => {
@@ -22,7 +22,7 @@ export default function Servicios() {
         const response = await getAllServices();
         const userInfo = await getUserInfo();
         setServicios(response);
-        setRole(userInfo?.role);
+        setRoles(userInfo?.roles || []);
       } catch (err) {
         console.error('Error fetching services:', err);
         setError('Error al cargar los servicios');
@@ -116,9 +116,9 @@ export default function Servicios() {
               <ServiceCard
                 key={servicio.id}
                 service={servicio}
-                showActions={role === 'ADMIN'}
-                role={role || ''}
-                onEdit={handleEditServiceAssignments}
+                showActions={roles?.includes('ADMIN')}
+                roles={roles || []}
+                onEditServices={handleEditServiceAssignments}
                 onDelete={handleDeleteService}
               />
             ))}

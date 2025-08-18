@@ -3,7 +3,7 @@ type User ={
     name: string;
     email: string;
     phoneNumber: string;
-    role: 'ADMIN' | 'DIRECTOR' | 'MUSICIAN';
+    roles: ('ADMIN' | 'DIRECTOR' | 'MUSICIAN')[]; // Cambiado de role a roles como array
     createdAt: string;
 }
 

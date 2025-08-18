@@ -2,14 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { getUserInfo } from '@/service/backend/auth';
-import { User } from '@/types/auth';
+
 
 // Usar el enrutador de Next.js para la navegación
 import { useRouter } from 'next/navigation';
+import { deleteServicesExpired } from '@/service/backend/system';
 
 export default function AdminPage() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -18,11 +20,7 @@ export default function AdminPage() {
         const userInfo = await getUserInfo();
         setUser(userInfo);
         
-        // Verificar que el usuario sea ADMIN
-        if (userInfo && userInfo.role !== 'ADMIN') {
-          // Redirigir si no es admin
-          window.location.href = '/dashboard';
-        }
+       
       } catch (error) {
         console.error('Error cargando información del usuario:', error);
       } finally {
@@ -39,6 +37,17 @@ export default function AdminPage() {
     router.push('/admin/servicios');
   };
 
+  const onClickEliminarServiciosExpirados = async() => {
+    setIsDeleting(true);
+    const response = await deleteServicesExpired();
+    setIsDeleting(false);
+    if (response.status === 'SUCCESS') {
+      alert('Servicios expirados eliminados correctamente');
+    } else {
+      alert('Error al eliminar servicios expirados');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -47,7 +56,7 @@ export default function AdminPage() {
     );
   }
 
-  if (!user || user.role !== 'ADMIN') {
+  if (!user || !user.roles?.includes('ADMIN')) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -75,9 +84,10 @@ export default function AdminPage() {
             <button onClick={onClickCrearServicio} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
               Crear Servicio
             </button>
-            {/* <button className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors">
-              Gestionar Usuarios
-            </button> */}
+            <button disabled={isDeleting} onClick={onClickEliminarServiciosExpirados} className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors">
+              Eliminar servicios expirados
+            </button>
+            {isDeleting && <p className="text-gray-600">Eliminando servicios expirados...</p>}
 {/*            
             <button className="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition-colors">
               Configuración
