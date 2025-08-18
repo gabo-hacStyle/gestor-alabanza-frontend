@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getUserInfo, logout } from '@/service/backend/auth';
-import { User } from '@/types/auth';
+
 
 export default function UserHeader() {
   const [user, setUser] = useState<User | null>(null);
@@ -76,9 +76,7 @@ export default function UserHeader() {
           <p className="text-sm font-medium text-gray-900">
             {user.name || 'Usuario'}
           </p>
-          <p className="text-xs text-gray-500">
-            {user.email} • {getRoleDisplayName(user.role)}
-          </p>
+          
         </div>
       </div>
       

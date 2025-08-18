@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 
-import { User } from '@/types/auth';
 import { getUserById } from '@/service/backend/users';
 import UserDashboard from '@/components/UserDashboard';
 
