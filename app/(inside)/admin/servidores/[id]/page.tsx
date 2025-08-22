@@ -19,11 +19,14 @@ export default function AdminServidores() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [users, setUsers] = useState<User[]>([]);
-  const [formData, setFormData] = useState<UpdateAssignment>({
+  const [oldAssignments, setOldAssignments] = useState<Assignment>({
     directorIds: [],
     musiciansList: []
   });
-
+  const [newAssignments, setNewAssignments] = useState<Assignment>({
+    directorIds: [],
+    musiciansList: []
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,15 +42,17 @@ export default function AdminServidores() {
         
         setUsers(usersData);
         
-        
-        // Inicializar formulario con datos del servicio
+        // Inicializar oldAssignments con datos del servicio actual
         const directorIds = serviceData.directorIds || [];
         const musicianAssignments = serviceData.musicianAssignments || [] as MusicianAssignment[];
         
-        setFormData({
+        const currentAssignments: Assignment = {
           directorIds: directorIds,
           musiciansList: musicianAssignments
-        });
+        };
+        
+        setOldAssignments(currentAssignments);
+        setNewAssignments(currentAssignments); // Inicialmente son iguales
         
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -62,33 +67,37 @@ export default function AdminServidores() {
     }
   }, [serviceId]);
   
-  console.log('Form data:', formData);
+  console.log('Old assignments:', oldAssignments);
+  console.log('New assignments:', newAssignments);
 
   const handleDirectorsChange = (directorIds: string[]) => {
-    setFormData(prev => ({
+    setNewAssignments(prev => ({
       ...prev,
       directorIds
     }));
   };
 
   const handleMusiciansListChange = (musiciansList: MusicianAssignment[]) => {
-    setFormData(prev => ({
+    setNewAssignments(prev => ({
       ...prev,
       musiciansList
     }));
   };
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Datos del servidor:', formData);
+    
+    const updateRequest: UpdateAssignment = {
+      oldAssignments,
+      newAssignments
+    };
+    
+    console.log('Datos del servidor:', updateRequest);
 
-    await updateServiceAssignments(serviceId, formData);
+    await updateServiceAssignments(serviceId, updateRequest);
     alert('Servidor guardado exitosamente');
     router.push('/servicios');
   };
-
-  
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -101,7 +110,7 @@ export default function AdminServidores() {
           <div>
             <UsersSelection
               users={users}
-              selectedUserIds={formData.directorIds}
+              selectedUserIds={newAssignments.directorIds}
               onSelectionChange={handleDirectorsChange}
               placeholder="Selecciona director(es)"
               label="Director(es)"
@@ -120,7 +129,7 @@ export default function AdminServidores() {
           <div>
             <MusiciansSelection
               users={users}
-              musiciansList={formData.musiciansList}
+              musiciansList={newAssignments.musiciansList}
               onAssignmentsChange={handleMusiciansListChange}
               availableInstruments={availableInstruments}
               loading={loading}

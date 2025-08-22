@@ -34,9 +34,14 @@ type UpdateAssignmentRequest = {
     musiciansList: MusiciansList[];
 }
 
-type UpdateAssignment = {
+type Assignment = {
     directorIds: string[];
     musiciansList: MusicianAssignment[];
+}
+
+type UpdateAssignment = {
+    oldAssignments: Assignment;
+    newAssignments: Assignment;
 }
 
 type UpdateAssignmentBody = Partial<UpdateAssignment>;
