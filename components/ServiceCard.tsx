@@ -24,24 +24,19 @@ export default function ServiceCard({
 }: ServiceCardProps) {
 
 
+  const parseDateLocal = (dateString: string) => {
+    const [year, month, day] = dateString.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  };
+  
   const formatDate = (dateString: string) => {
     try {
-      const date = new Date(dateString);
-      return format(date, 'EEEE, d \'de\' MMMM \'de\' yyyy', { locale: es });
+      const date = parseDateLocal(dateString);
+      return format(date, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es });
     } catch {
       return dateString;
     }
   };
-
-  const formatTime = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      return format(date, 'HH:mm');
-    } catch {
-      return '';
-    }
-  };
-
   
 
   return (
