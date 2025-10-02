@@ -17,18 +17,19 @@ export default function UserDashboard({user}: {user: User}) {
   useEffect(() => {
     const fetchMisServicios = async () => {
       const response = await getServicesByUserId(user.id);
-
-      const serviciosComoDirector = response.filter(servicio => servicio.directors.some(director => director.id === user.id));
-      //El resto son de musico
-      const serviciosComoMusico = response.filter(servicio => !servicio.directors.some(director => director.id === user.id));
-      console.log(serviciosComoMusico);
-      
-
-
-
+  
+      const serviciosComoDirector = response.filter(servicio =>
+        Array.isArray(servicio.directors) && servicio.directors.some(director => director.id === user.id)
+      );
+  
+      const serviciosComoMusico = response.filter(servicio =>
+        (!Array.isArray(servicio.directors) || !servicio.directors.some(director => director.id === user.id)) &&
+        Array.isArray(servicio.musiciansList) && servicio.musiciansList.some(musico => musico.musician.id === user.id)
+      );
+  
       setMisServicios(serviciosComoMusico);
       setServiciosComoDirector(serviciosComoDirector);
-    };  
+    };
     fetchMisServicios();
   }, []);
 
