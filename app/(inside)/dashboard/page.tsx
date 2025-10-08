@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 
 import { getUserById } from '@/service/backend/users';
 import UserDashboard from '@/components/UserDashboard';
+import { useRouter } from 'next/navigation';
 
-export default function DashboardPage() {
+export default function DashboardPage() { 
+  const router = useRouter();
   const [user, setUser] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -36,10 +38,12 @@ export default function DashboardPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Error
+          <h1 className="text-2xl font-bold text-white mb-4">
+            Hubo una actualizacion de la plataforma!
+
           </h1>
-          <p className="text-gray-600">No se pudo cargar la información del usuario.</p>
+          <p className="text-gray-300">Vuelve a iniciar sesión para ser redirigido al dashboard.</p>
+          <button className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 cursor-pointer" onClick={() => router.push('/login')}>Volver a entrar</button>
         </div>
       </div>
     );
