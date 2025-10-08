@@ -31,6 +31,9 @@ export function middleware(request: NextRequest) {
     // console.log('🔒 Es ruta privada:', !isPublicRoute);
     return NextResponse.redirect(new URL('/login', request.url));
   }
+  if(pathname === '/dashboard' && !userInfo) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
 
   // Si hay token válido y está en login, redirigir al dashboard apropiado
   if (hasValidToken && pathname === '/login') {
