@@ -116,7 +116,7 @@ export default function LoginPage() {
           <br />
           Alianza Cristiana Neiva
           <br />
-            Inicia sesión con tu cuenta de Google
+            En este momento Gabo le está haciendo mantenimiento a la página .... Esperar!
           </p>
         </div>
         
