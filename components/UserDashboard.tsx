@@ -24,7 +24,7 @@ export default function UserDashboard({user}: {user: User}) {
   
       const serviciosComoMusico = response.filter(servicio =>
         (!Array.isArray(servicio.directors) || !servicio.directors.some(director => director.id === user.id)) &&
-        Array.isArray(servicio.musiciansList) && servicio.musiciansList.some(musico => musico.musician.id === user.id)
+        Array.isArray(servicio.musiciansList) && servicio.musiciansList.some(musico => musico.musician.find(u => u.id === user.id))
       );
   
       setMisServicios(serviciosComoMusico);
@@ -53,16 +53,16 @@ export default function UserDashboard({user}: {user: User}) {
     <div className="space-y-6">
      <div className="grid gap-4">
         <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="font-medium text-gray-900 mb-2">Servicios asignados</h3>
+          <h3 className="font-medium text-gray-900 mb-2">Servicios asignados:</h3>
           <p className="text-3xl font-bold text-blue-600">{misServicios.length + serviciosComoDirector.length}</p>
-          <p className="text-sm text-gray-600">Asignados</p>
+          
         </div>
 
         {hasRole(user, 'DIRECTOR') && (
           <div className="bg-white rounded-lg shadow p-4">
-            <h3 className="font-medium text-gray-900 mb-2">Servicios como director</h3>
+            <h3 className="font-medium text-gray-900 mb-2">Servicios como director/directora:</h3>
             <p className="text-3xl font-bold text-blue-600">{serviciosComoDirector.length}</p>
-            <p className="text-sm text-gray-600">Asignados</p>
+            
           </div>
         )}
         

@@ -51,18 +51,18 @@ export default function DashboardPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="bg-white rounded-lg shadow-sm p-3">
          {/* Mensaje de Bienvenida */}
-         <div className="mt-8 bg-yellow-50 rounded-lg p-6">
+         <div className="mt-8 b rounded-lg p-6">
           <h2 className="text-lg font-semibold text-yellow-900 mb-2">
-            Bienvenido  {user.name}!
+            Bienvenid@ {user.name}!
           </h2>
          
         </div>
         
         <div className="grid grid-cols-1  gap-6">
           {/* Información del Usuario */}
-          <div className="bg-blue-50 rounded-lg p-6">
+          <div className="rounded-lg p-6">
             <h2 className="text-lg font-semibold text-blue-900 mb-4">
               Información del Usuario
             </h2>
@@ -74,7 +74,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Servicios Próximos */}
-          <div className="bg-green-50 rounded-lg">
+          <div className=" rounded-lg mb-8 ">
             <h2 className="text-lg font-semibold text-green-900 mb-4">
               Próximos Servicios
             </h2>
