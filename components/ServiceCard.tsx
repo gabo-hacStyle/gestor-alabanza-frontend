@@ -11,6 +11,7 @@ interface ServiceCardProps {
   onEditServices?: (serviceId: string) => void;
   onEditSongs?: (serviceId: string) => void;
   onDelete?: (serviceId: string) => void;
+  instrument?: string;
 }
 
 export default function ServiceCard({ 
@@ -20,7 +21,8 @@ export default function ServiceCard({
   onEditServices, 
   onEditSongs,
   onDelete,
-  onAddSongs
+  onAddSongs,
+  instrument
 }: ServiceCardProps) {
 
 
@@ -37,7 +39,13 @@ export default function ServiceCard({
       return dateString;
     }
   };
+  const phone = "573132946357";
   
+  const message = encodeURIComponent(`
+    Hola pastor Adrian, le comento que revisando mi agenda, no podré servir en el servicio del
+   ${formatDate(service.serviceDate)} como ${instrument || 'instrumento no especificado'}. Entonces quisiera solicitar el cambio con algun otro salmista que si se encuentre disponible. Quedo atento cualquier cambio, gracias`);
+  
+   const whatsappUriChangeLinkRequest = `https://wa.me/${phone}?text=${message}`
 
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
@@ -63,19 +71,14 @@ export default function ServiceCard({
                   </svg>
                 </button>
               )}
-              {/* {onDelete && roles?.includes('ADMIN') && (
-                <button
-                  onClick={() => onDelete(service.id)}
-                  className="p-2 bg-red-500 hover:bg-red-600 rounded-md transition-colors"
-                  title="Eliminar servicio"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                </button>
-              )} */}
             </div>
           )}
+          {instrument && (
+            <button className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"  >
+              <a href={whatsappUriChangeLinkRequest}> Solicitar cambio</a>
+            </button>
+          )}
+          
         </div>
       </div>
 

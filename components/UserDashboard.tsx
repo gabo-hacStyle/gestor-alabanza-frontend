@@ -79,6 +79,7 @@ export default function UserDashboard({user}: {user: User}) {
             <ServiceCard key={servicio.id} service={servicio} roles={user.roles || []}  
               onEditSongs={handleEditSongs}
               onAddSongs={handleAddSongs}
+              instrument="director@"
             />
           ))}
         </div>
@@ -87,7 +88,9 @@ export default function UserDashboard({user}: {user: User}) {
         <div className="space-y-3">
 
           {misServicios.map((servicio) => (
-            <ServiceCard key={servicio.id} service={servicio}   />
+            <ServiceCard key={servicio.id} service={servicio} instrument={
+              servicio.musiciansList?.find(musico => musico.musician.some(u => u.id === user.id))?.instrument || 'Instrumento no especificado'
+            } />
           ))}
         </div>
       </div>
