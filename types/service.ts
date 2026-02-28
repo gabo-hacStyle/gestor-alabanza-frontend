@@ -1,7 +1,7 @@
 
 
 type MusiciansList = {
-    musician: User;
+    musician: User[];
     instrument: string;
 }
 
@@ -26,7 +26,7 @@ type UpdateServiceGeneral = {
 type UpdateServiceGeneralBody = Partial<UpdateServiceGeneral>;
 
 type MusicianAssignment = {
-    musicianId: string;
+    musicianIds: string[];
     instrument: string;
 }
 

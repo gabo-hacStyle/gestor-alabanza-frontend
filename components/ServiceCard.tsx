@@ -120,16 +120,18 @@ export default function ServiceCard({
           <div className="ml-6">
             {service.musiciansList && service.musiciansList.length > 0 ? (
               <div className="flex flex-wrap gap-2">
-                {service.musiciansList.map((musician) => (
-                  <span
-                    key={musician.musician.id}
-                    className="inline-flex items-center gap-1 px-2 py-1 text-black border border-gray-300 rounded-md"
-                  >
-                    
-                    {musician.musician.name} - {musician.instrument}
-                    
-                  </span>
-                ))}
+                {service.musiciansList.map((mList, idx) => {
+                  // mList.musician is an array of User objects
+                  const names = (mList.musician || []).map(u => u.name).join(' / ');
+                  return (
+                    <span
+                      key={`${mList.instrument}-${idx}`}
+                      className="inline-flex items-center gap-1 px-2 py-1 text-black border border-gray-300 rounded-md"
+                    >
+                      {names} - {mList.instrument}
+                    </span>
+                  );
+                })}
               </div>
             ) : (
               <p className="text-gray-500 text-sm">No hay músicos asignados</p>

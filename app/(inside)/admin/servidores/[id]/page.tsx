@@ -44,15 +44,15 @@ export default function AdminServidores() {
         
         // Inicializar oldAssignments con datos del servicio actual
         const directorIds = serviceData.directorIds || [];
-        const musicianAssignments = serviceData.musicianAssignments || [] as MusicianAssignment[];
+        const musiciansList = serviceData.musiciansList || [] as MusicianAssignment[];
         
         const currentAssignments: Assignment = {
           directorIds: directorIds,
-          musiciansList: musicianAssignments
+          musiciansList
         };
         
         setOldAssignments(currentAssignments);
-        setNewAssignments(currentAssignments); // Inicialmente son iguales
+        setNewAssignments(currentAssignments); // Inicialmente deberian ser iguales
         
       } catch (err) {
         console.error('Error fetching data:', err);

@@ -1,11 +1,6 @@
 'use client';
-
-
-
-
-
 interface MusicianAssignment {
-  musicianId: string;
+  musicianIds: string[];
   instrument: string;
 }
 
@@ -29,25 +24,29 @@ export default function MusiciansSelection({
   onRetry
 }: MusiciansSelectionProps) {
 
-  const handleMusicianChange = (instrument: string, musicianId: string) => {
-    const newAssignments = [...musiciansList];
-    const existingIndex = newAssignments.findIndex(assignment => assignment.instrument === instrument);
-    
-    if (existingIndex >= 0) {
-      if (musicianId) {
-        newAssignments[existingIndex] = { instrument, musicianId };
-      } else {
-        newAssignments.splice(existingIndex, 1);
-      }
-    } else if (musicianId) {
-      newAssignments.push({ instrument, musicianId });
+  const handleMusicianChange = (instrument: string, selectedMusicianIds: string[]) => {
+    // Build new assignments: keep all non-related instruments, then add this instrument with all selected musicians
+    const newAssignments = musiciansList.filter(a => a.instrument !== instrument);
+
+    if (selectedMusicianIds.length > 0) {
+      newAssignments.push({ instrument, musicianIds: selectedMusicianIds });
     }
     
     onAssignmentsChange(newAssignments);
   };
 
-  const removeMusician = (instrument: string) => {
-    const newAssignments = musiciansList.filter(assignment => assignment.instrument !== instrument);
+  const removeMusician = (instrument: string, musicianIdToRemove?: string) => {
+    const newAssignments = musiciansList.map(assignment => {
+      if (assignment.instrument !== instrument) return assignment;
+      
+      if (musicianIdToRemove) {
+        // Remove specific musician from this instrument
+        const filtered = assignment.musicianIds.filter(id => id !== musicianIdToRemove);
+        return filtered.length > 0 ? { ...assignment, musicianIds: filtered } : null;
+      }
+      // Remove entire instrument assignment
+      return null;
+    }).filter(Boolean) as MusicianAssignment[];
     onAssignmentsChange(newAssignments);
   };
 
@@ -98,32 +97,50 @@ export default function MusiciansSelection({
       
       <div className="grid gap-4">
         {availableInstruments.map((instrument) => {
-          const currentAssignment = musiciansList.find(assignment => assignment.instrument === instrument);
-          const currentMusicianId = currentAssignment?.musicianId || '';
-          
+          const assignment = musiciansList.find(a => a.instrument === instrument);
+          const currentMusicianIds = assignment?.musicianIds || [];
+
           return (
             <div key={instrument} className="flex items-center gap-4 text-gray-700">
               <div className="w-32 font-medium text-gray-700">{instrument}</div>
               <div className="flex-1">
-                <select
-                  value={currentMusicianId}
-                  onChange={(e) => handleMusicianChange(instrument, e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Selecciona músico</option>
-                  {users.map((user) => (
-                    <option key={user.id} value={user.id} className='text-gray-700'>
-                      {user.name}
-                    </option>
-                  ))}
-                </select>
+                {/* custom multiselect using checkboxes for better UX */}
+                <div className="w-full px-3 py-2 border border-gray-300 rounded-md">
+                  <div className="max-h-40 overflow-y-auto">
+                    {users.map((user) => {
+                      const checked = currentMusicianIds.includes(user.id);
+                      return (
+                        <label
+                          key={user.id}
+                          className="flex items-center space-x-2 py-1 cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                            checked={checked}
+                            onChange={(e) => {
+                              let nextIds = [...currentMusicianIds];
+                              if (e.target.checked) {
+                                nextIds.push(user.id);
+                              } else {
+                                nextIds = nextIds.filter(id => id !== user.id);
+                              }
+                              handleMusicianChange(instrument, nextIds);
+                            }}
+                          />
+                          <span className="text-gray-700">{user.name}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
-              {currentMusicianId && (
+              {currentMusicianIds.length > 0 && (
                 <button
                   type="button"
                   onClick={() => removeMusician(instrument)}
                   className="p-2 text-red-600 hover:text-red-800 transition-colors "
-                  title="Remover músico"
+                  title="Remover todos los músicos del instrumento"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -140,22 +157,24 @@ export default function MusiciansSelection({
         <div className="mt-4">
           <p className="text-sm text-gray-600 mb-2">Asignaciones actuales:</p>
           <div className="flex flex-wrap gap-2">
-            {musiciansList.map((assignment) => (
-              <span
-                key={assignment.instrument}
-                className="px-3 py-1 bg-green-100 rounded-full text-sm flex items-center gap-1 text-gray-700"
-              >
-                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                {getMusicianName(assignment.musicianId)} - {assignment.instrument}
-                <button
-                  type="button"
-                  onClick={() => removeMusician(assignment.instrument)}
-                  className="text-green-600 hover:text-green-800 font-bold"
+            {musiciansList.map((assignment) =>
+              assignment.musicianIds.map((musicianId, idx) => (
+                <span
+                  key={`${assignment.instrument}-${musicianId}-${idx}`}
+                  className="px-3 py-1 bg-green-100 rounded-full text-sm flex items-center gap-1 text-gray-700"
                 >
-                  ×
-                </button>
-              </span>
-            ))}
+                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  {getMusicianName(musicianId)} - {assignment.instrument}
+                  <button
+                    type="button"
+                    onClick={() => removeMusician(assignment.instrument, musicianId)}
+                    className="text-green-600 hover:text-green-800 font-bold"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))
+            )}
           </div>
         </div>
       )}
