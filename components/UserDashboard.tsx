@@ -13,8 +13,11 @@ export default function UserDashboard({user}: {user: User}) {
 
   const [misServicios, setMisServicios] = useState<Service[]>([]);
   const [serviciosComoDirector, setServiciosComoDirector] = useState<Service[]>([]);
+  
+  const [bringDataAgain, setBringDataAgain] = useState(false);
 
   useEffect(() => {
+
     const fetchMisServicios = async () => {
       const response = await getServicesByUserId(user.id);
   
@@ -31,9 +34,10 @@ export default function UserDashboard({user}: {user: User}) {
       setServiciosComoDirector(serviciosComoDirector);
     };
     fetchMisServicios();
-  }, []);
+  }, [bringDataAgain]);
 
 
+  
 
 
   //SOlo para directores, para editar canciones
@@ -47,6 +51,7 @@ export default function UserDashboard({user}: {user: User}) {
     console.log(serviceId);
     router.push(`/director/canciones/editar/${serviceId}`);
   };
+
 
   
   return (
@@ -66,19 +71,20 @@ export default function UserDashboard({user}: {user: User}) {
           </div>
         )}
         
-        {/* <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="font-medium text-gray-900 mb-2">Próximo Servicio</h3>
-          <p className="text-lg font-bold text-green-600">{misServicios[0].serviceDate}</p>
-          <p className="text-sm text-gray-600">Servicio Dominical</p>
-        </div> */}
+        
       </div>
       <div className="bg-white rounded-lg shadow grid gap-4">
         {/* Servicios como director */}
         <div className="space-y-3">
           {hasRole(user, 'DIRECTOR') && serviciosComoDirector.map((servicio) => (
-            <ServiceCard key={servicio.id} service={servicio} roles={user.roles || []}  
+            <ServiceCard 
+              key={servicio.id} 
+              service={servicio} 
+              roles={user.roles || []}  
               onEditSongs={handleEditSongs}
               onAddSongs={handleAddSongs}
+              allowSetClothesColor
+              setBringDataAgain={setBringDataAgain}
               instrument="director@"
             />
           ))}

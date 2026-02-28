@@ -15,6 +15,7 @@ type Service = {
     directors: User[];
     musiciansList: MusiciansList[];
     songsList: Song[];
+    clothesColor?: string;
 }
 
 type UpdateServiceGeneral = {

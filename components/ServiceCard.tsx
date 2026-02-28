@@ -1,7 +1,9 @@
 'use client';
 
+import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { assignClothesColorToService } from '@/service/backend/director';
 
 interface ServiceCardProps {
   service: Service;
@@ -12,6 +14,8 @@ interface ServiceCardProps {
   onEditSongs?: (serviceId: string) => void;
   onDelete?: (serviceId: string) => void;
   instrument?: string;
+  allowSetClothesColor?: boolean;
+  setBringDataAgain?: (bring: boolean) => void;
 }
 
 export default function ServiceCard({ 
@@ -20,10 +24,32 @@ export default function ServiceCard({
   roles,
   onEditServices, 
   onEditSongs,
-  onDelete,
+  allowSetClothesColor,
   onAddSongs,
-  instrument
+  instrument,setBringDataAgain
 }: ServiceCardProps) {
+  const [colorModalOpen, setColorModalOpen] = useState(false);
+  const [colorInput, setColorInput] = useState('');
+  const [clothesColor, setClothesColor] = useState<string>(''); 
+
+
+  useEffect(() => {
+    const putColorBackend = async () => {
+        try{
+            await assignClothesColorToService(clothesColor, service.id);
+            alert('Color de vestimenta asignado correctamente');
+        } catch (error) {
+            console.error('Error al asignar color de vestimenta:', error);
+            alert('No tienes permisos para asignar el color de vestimenta');   
+        }
+    }
+    if (clothesColor.length > 0) {
+      putColorBackend();
+      if (setBringDataAgain) {
+        setBringDataAgain(true);
+      }
+    }
+  }, [clothesColor]); 
 
 
   const parseDateLocal = (dateString: string) => {
@@ -83,67 +109,10 @@ export default function ServiceCard({
       </div>
 
       <div className="p-4 space-y-4">
+        
 
-         {/* Directores */}
-         <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            <span className="text-sm font-medium text-gray-700">Directores:</span>
-          </div>
-          <div className="ml-6">
-            {service.directors && service.directors.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {service.directors.map((director) => (
-                  <span
-                    key={director.id}
-                    className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
-                  >
-                    <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                    {director.name}
-                   
-                  </span>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500 text-sm">No hay directores asignados</p>
-            )}
-          </div>
-        </div>
-
-        {/* Músicos */}
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-            </svg>
-            <span className="text-sm font-medium text-gray-700">Músicos:</span>
-          </div>
-          <div className="ml-6">
-            {service.musiciansList && service.musiciansList.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {service.musiciansList.map((mList, idx) => {
-                  // mList.musician is an array of User objects
-                  const names = (mList.musician || []).map(u => u.name).join(' / ');
-                  return (
-                    <span
-                      key={`${mList.instrument}-${idx}`}
-                      className="inline-flex items-center gap-1 px-2 py-1 text-black border border-gray-300 rounded-md"
-                    >
-                      {names} - {mList.instrument}
-                    </span>
-                  );
-                })}
-              </div>
-            ) : (
-              <p className="text-gray-500 text-sm">No hay músicos asignados</p>
-            )}
-          </div>
-        </div>
-
-
-        {(!service.songsList && roles?.includes('DIRECTOR') && onAddSongs) ? (
+        <div className='flex items-center gap-2.5'>
+          {(!service.songsList && roles?.includes('DIRECTOR') && onAddSongs) ? (
               <>
               <button
                 type="button"
@@ -158,6 +127,25 @@ export default function ServiceCard({
               </button>
               </>
             ) : null}
+             {allowSetClothesColor && (
+              <button
+                className="inline-flex items-center px-3 py-1 underline  text-sm rounded text-green-600 mb-2"
+                onClick={() => setColorModalOpen(true)}
+              >
+                Definir color de vestimenta
+              </button>
+            )}
+        </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a4 4 0 004-4v-1A4 4 0 0016 11h-1m-4-3h-.01M7 21h10a2 2 0 002-2v-1a2 2 0 00-2-2H7a2 2 0 00-2 2v1a2 2 0 002 2z" />
+              </svg>
+              <span className="text-sm font-medium text-gray-700">Color de vestimenta:</span>
+            </div>
+              <p className="ml-6 text-gray-900">{service.clothesColor || 'No definido aun'}</p>
+          </div>
 
         {/* Canciones */}
         {service.songsList && service.songsList.length > 0 && (
@@ -217,6 +205,66 @@ export default function ServiceCard({
             </div>
           </div>
         )}
+
+         {/* Directores */}
+         <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span className="text-sm font-medium text-gray-700">Directores:</span>
+          </div>
+          <div className="ml-6 flex justify-between items-center">
+            {service.directors && service.directors.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {service.directors.map((director) => (
+                  <span
+                    key={director.id}
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                  >
+                    <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                    {director.name}
+                   
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-sm">No hay directores asignados</p>
+            )}
+           
+          </div>
+        </div>
+
+        {/* Músicos */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+            </svg>
+            <span className="text-sm font-medium text-gray-700">Músicos:</span>
+          </div>
+          <div className="ml-6">
+            {service.musiciansList && service.musiciansList.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {service.musiciansList.map((mList, idx) => {
+                  // mList.musician is an array of User objects
+                  const names = (mList.musician || []).map(u => u.name).join(' / ');
+                  return (
+                    <span
+                      key={`${mList.instrument}-${idx}`}
+                      className="inline-flex items-center gap-1 px-2 py-1 text-black border border-gray-300 rounded-md"
+                    >
+                      {names} - {mList.instrument}
+                    </span>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-sm">No hay músicos asignados</p>
+            )}
+          </div>
+        </div>
+
         {/* Información básica */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
@@ -241,9 +289,44 @@ export default function ServiceCard({
             </div>
             <p className="text-gray-900 ml-6">{service.location}</p>
           </div>
+         
         </div>
-  
+        
       </div>
+
+
+      {/* color chooser modal */}
+      {colorModalOpen && setClothesColor && (
+        <div className="fixed text-gray-900 inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm">
+            <h2 className="text-lg font-semibold mb-4">Color de vestimenta para el servicio</h2>
+            <input
+              type="text"
+              value={colorInput}
+              onChange={(e) => setColorInput(e.target.value)}
+              placeholder="Ingrese color"
+              className="w-full px-3 py-2 border border-gray-300 rounded mb-4"
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                onClick={() => setColorModalOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                onClick={() => {
+                  setClothesColor(colorInput);
+                  setColorModalOpen(false);
+                }}
+              >
+                Guardar color
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

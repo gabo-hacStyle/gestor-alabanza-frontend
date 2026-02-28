@@ -57,3 +57,28 @@ export const updateSongsList = async (idService: string, songsList: CreateSongBo
     const data = await response.json() as Service;
     return data;
 }
+
+export const assignClothesColorToService = async (color: string, idService: string, ) => {const idDirector = await getDirectorId();
+    console.log(idDirector);
+    const response = await fetch(`${BASE_DIRECTOR}/${idDirector}/services/${idService}/clothes`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/text'
+        },
+        body: color
+    })
+    console.log(response.status);
+    if (!response.ok) {
+        if(response.status === 403){
+            return {
+                status: 403,
+                message: 'Forbidden'
+            }
+        }
+        throw new Error('Failed to set clothes color');
+    }
+
+    const data = await response.json() as Service;
+    
+    return data;
+}
